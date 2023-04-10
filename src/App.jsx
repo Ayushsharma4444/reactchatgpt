@@ -4,7 +4,7 @@ import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { MainContainer, ChatContainer, MessageList, Message, MessageInput, TypingIndicator } from '@chatscope/chat-ui-kit-react';
 
 // const API_KEY = "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";
-const API_KEY = "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";
+const API_KEY = "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";
 // "Explain things like you would to a 10 year old learning how to code."
 const systemMessage = { //  Explain things like you're talking to a software professional with 5 years of experience.
   "role": "system", "content": "Explain things like you're talking to a software professional with 2 years of experience."
@@ -13,7 +13,7 @@ const systemMessage = { //  Explain things like you're talking to a software pro
 function App() {
   const [messages, setMessages] = useState([
     {
-      message: "Hello, I'm ChatGPT! Convert code in to python !",
+      message: "Hello, I'm Ajiledone! Convert code in to python !",
       sentTime: "just now",
       sender: "ChatGPT"
     }
@@ -91,7 +91,7 @@ function App() {
           <ChatContainer>       
             <MessageList 
               scrollBehavior="smooth" 
-              typingIndicator={isTyping ? <TypingIndicator content="ChatGPT is typing" /> : null}
+              typingIndicator={isTyping ? <TypingIndicator content="Ajiledone is typing" /> : null}
             >
               {messages.map((message, i) => {
                 console.log(message)
