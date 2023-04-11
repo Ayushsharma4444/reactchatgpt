@@ -1,34 +1,46 @@
-import { useState } from 'react'
-import './App.css'
-import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
-import { MainContainer, ChatContainer, MessageList, Message, MessageInput, TypingIndicator } from '@chatscope/chat-ui-kit-react';
+import { useState } from "react";
+import "./App.css";
+import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
+import {
+  MainContainer,
+  ChatContainer,
+  MessageList,
+  Message,
+  MessageInput,
+  TypingIndicator,
+} from "@chatscope/chat-ui-kit-react";
+// import {  } from "dotenv";
 
 // const API_KEY = "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";
-const API_KEY = "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";
+// const API_KEY = "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";
+const API_KEY = "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";
 // "Explain things like you would to a 10 year old learning how to code."
-const systemMessage = { //  Explain things like you're talking to a software professional with 5 years of experience.
-  "role": "system", "content": "Explain things like you're talking to a software professional with 2 years of experience."
-}
+const systemMessage = {
+  //  Explain things like you're talking to a software professional with 5 years of experience.
+  role: "system",
+  content:
+    "Explain things like you're talking to a software professional with 2 years of experience.",
+};
 
 function App() {
   const [messages, setMessages] = useState([
     {
       message: "Hello, I'm Ajiledone! Convert code in to python !",
       sentTime: "just now",
-      sender: "ChatGPT"
-    }
+      sender: "ChatGPT",
+    },
   ]);
   const [isTyping, setIsTyping] = useState(false);
 
   const handleSend = async (message) => {
     const newMessage = {
       message: `${message} convert into python`,
-      direction: 'outgoing',
-      sender: "user"
+      direction: "outgoing",
+      sender: "user",
     };
 
     const newMessages = [...messages, newMessage];
-    
+
     setMessages(newMessages);
 
     // Initial system message to determine ChatGPT functionality
@@ -37,7 +49,8 @@ function App() {
     await processMessageToChatGPT(newMessages);
   };
 
-  async function processMessageToChatGPT(chatMessages) { // messages is an array of messages
+  async function processMessageToChatGPT(chatMessages) {
+    // messages is an array of messages
     // Format messages for chatGPT API
     // API is expecting objects in format of { role: "user" or "assistant", "content": "message here"}
     // So we need to reformat
@@ -49,62 +62,78 @@ function App() {
       } else {
         role = "user";
       }
-      return { role: role, content: messageObject.message}
+      return { role: role, content: messageObject.message };
     });
-
 
     // Get the request body set up with the model we plan to use
     // and the messages which we formatted above. We add a system message in the front to'
-    // determine how we want chatGPT to act. 
+    // determine how we want chatGPT to act.
     const apiRequestBody = {
-      "model": "gpt-3.5-turbo",
-      "messages": [
-        systemMessage,  // The system message DEFINES the logic of our chatGPT
-        ...apiMessages // The messages from our chat with ChatGPT
-      ]
-    }
+      model: "gpt-3.5-turbo",
+      messages: [
+        systemMessage, // The system message DEFINES the logic of our chatGPT
+        ...apiMessages, // The messages from our chat with ChatGPT
+      ],
+    };
 
-    // await fetch("https://api.openai.com/v1/models", 
-    await fetch("https://api.openai.com/v1/chat/completions", 
-    {
+    // await fetch("https://api.openai.com/v1/models",
+    await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        "Authorization": "Bearer " + API_KEY,
-        "Content-Type": "application/json"
+        Authorization: "Bearer " +import.meta.env.VITE_API_KEY ,
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(apiRequestBody)
-    }).then((data) => {
-      return data.json();
-    }).then((data) => {
-      console.log(data);
-      setMessages([...chatMessages, {
-        message: data.choices[0].message.content,
-        sender: "ChatGPT"
-      }]);
-      setIsTyping(false);
-    });
+      body: JSON.stringify(apiRequestBody),
+    })
+      .then((data) => {
+        return data.json();
+      })
+      .then((data) => {
+        console.log(data);
+        setMessages([
+          ...chatMessages,
+          {
+            message: data.choices[0].message.content,
+            sender: "ChatGPT",
+          },
+        ]);
+        setIsTyping(false);
+      });
   }
-
+  console.log( import.meta.env.VITE_API_KEY)
+  console.log("sdfgh")
   return (
     <div className="App">
-      <div style={{ display:"flex", justifyContent:"center", position:"relative", height: "90vh", width: "90vw"  }}>
-        <MainContainer style={{ margin:"auto",width:"80vw"}}>
-          <ChatContainer>       
-            <MessageList 
-              scrollBehavior="smooth" 
-              typingIndicator={isTyping ? <TypingIndicator content="Ajiledone is typing" /> : null}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          position: "relative",
+          height: "90vh",
+          width: "90vw",
+        }}
+      >
+        <MainContainer style={{ margin: "auto", width: "80vw" }}>
+          <ChatContainer>
+            <MessageList
+              scrollBehavior="smooth"
+              typingIndicator={
+                isTyping ? (
+                  <TypingIndicator content="Ajiledone is typing" />
+                ) : null
+              }
             >
               {messages.map((message, i) => {
-                console.log(message)
-                return <Message key={i} model={message} />
+                console.log(message);
+                return <Message key={i} model={message} />;
               })}
             </MessageList>
-            <MessageInput placeholder="Type message here" onSend={handleSend} />        
+            <MessageInput placeholder="Type message here" onSend={handleSend} />
           </ChatContainer>
         </MainContainer>
       </div>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
